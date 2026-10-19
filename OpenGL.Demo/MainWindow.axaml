@@ -1,0 +1,52 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:rendering="clr-namespace:Avalonia.OpenGLBackend.Rendering;assembly=Avalonia.OpenGLBackend"
+        mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
+        x:Class="OpenGL.Demo.MainWindow"
+        Title="OpenGL.Demo">
+    <Grid ColumnDefinitions="220,*">
+        <Border Grid.Column="0" Background="#1B1B1F" Padding="12">
+            <StackPanel Spacing="12">
+                <TextBlock Text="CNC"
+                           Foreground="#F0F0F0"
+                           FontSize="18"
+                           FontWeight="SemiBold" />
+                <Grid ColumnDefinitions="*,*,*"
+                      RowDefinitions="Auto,Auto,Auto"
+                      ColumnSpacing="6"
+                      RowSpacing="6">
+                    <Button Grid.Row="0" Grid.Column="0" Content="X-" Tag="X-" Click="OnJogClick" />
+                    <Button Grid.Row="0" Grid.Column="1" Content="Y-" Tag="Y-" Click="OnJogClick" />
+                    <Button Grid.Row="0" Grid.Column="2" Content="Z-" Tag="Z-" Click="OnJogClick" />
+                    <Button Grid.Row="1" Grid.Column="0" Content="X+" Tag="X+" Click="OnJogClick" />
+                    <Button Grid.Row="1" Grid.Column="1" Content="Y+" Tag="Y+" Click="OnJogClick" />
+                    <Button Grid.Row="1" Grid.Column="2" Content="Z+" Tag="Z+" Click="OnJogClick" />
+                    <Button Grid.Row="2" Grid.Column="0" Content="Home" Click="OnHomeClick" />
+                    <Button Grid.Row="2" Grid.Column="1" Content="Stop" Click="OnStopClick" />
+                    <Button Grid.Row="2" Grid.Column="2" Content="Fit" Click="OnFitClick" />
+                </Grid>
+                <TextBlock Text="Right button — orbit&#x0a;Middle button — pan&#x0a;Wheel — zoom"
+                           Foreground="#8A8A92"
+                           FontSize="12" />
+            </StackPanel>
+        </Border>
+        <Grid Grid.Column="1">
+            <Button Content="DOWN" Width="200" />
+            <Border Name="RendererHost" Background="Transparent">
+                <rendering:SceneRenderer Name="RRenderer" />
+            </Border>
+
+            <Button Content="UP" Margin="0,150,0,0" />
+
+            <TextBlock Name="FpsText"
+                       Foreground="Lime"
+                       FontSize="16"
+                       Margin="10"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       Text="FPS: --" />
+        </Grid>
+    </Grid>
+</Window>
