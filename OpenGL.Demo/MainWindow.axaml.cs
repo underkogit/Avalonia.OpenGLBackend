@@ -82,10 +82,11 @@ public partial class MainWindow : Window
             renderer.Camera.Pitch = 0.3f;
         });
 
-        var timer = new Avalonia.Threading.DispatcherTimer { Interval = TimeSpan.FromSeconds(12) };
+        var timer = new Avalonia.Threading.DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
         timer.Tick += (_, _) =>
         {
-            timer.Stop();
+           
+            renderer.Scene.Objects[0].Visible = !renderer.Scene.Objects[0].Visible;
             renderer.SetObjectWireframe(Path.GetFileNameWithoutExtension(ModelPath), true);
         };
         timer.Start();
