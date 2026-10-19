@@ -6,8 +6,9 @@ namespace Avalonia.OpenGLBackend.Rendering.Meshes;
 
 public sealed class TriangleMesh : Mesh
 {
-    public unsafe TriangleMesh(float[] vertices, uint[] indices)
+    public unsafe TriangleMesh(float[] vertices, uint[] indices, bool wireframe = false)
     {
+        Wireframe = wireframe;
         UseIndices = true;
         IndexCount = indices.Length;
         VertexCount = vertices.Length / 6;
@@ -39,9 +40,24 @@ public sealed class TriangleMesh : Mesh
         Context.BindVertexArray(0);
     }
 
+    public bool Wireframe { get; set; }
+
     protected override PrimitiveType GetPrimitiveType() => PrimitiveType.Triangles;
 
-    public static TriangleMesh FromRawData(RawMeshData data)
+    public override void Draw()
+    {
+        if (!Wireframe)
+        {
+            base.Draw();
+            return;
+        }
+
+        Context.PolygonMode(GLEnum.FrontAndBack, PolygonMode.Line);
+        base.Draw();
+        Context.PolygonMode(GLEnum.FrontAndBack, PolygonMode.Fill);
+    }
+
+    public static TriangleMesh FromRawData(RawMeshData data, bool wireframe = false)
     {
         if (data.Positions.Count == 0)
             throw new InvalidDataException("Mesh has no vertices.");
@@ -99,7 +115,7 @@ public sealed class TriangleMesh : Mesh
             }
         }
 
-        return new TriangleMesh(verts.ToArray(), indices.ToArray());
+        return new TriangleMesh(verts.ToArray(), indices.ToArray(), wireframe);
     }
 
     private static void AddVertex(List<float> v, (float X, float Y, float Z) p, (float X, float Y, float Z) n)

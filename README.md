@@ -8,7 +8,7 @@ A custom OpenGL renderer for Avalonia. The main control is `SceneRenderer` (an `
 
 - OpenGL 3.3 core rendering inside Avalonia
 - Scene of objects with an orbit camera (orbit / pan / zoom) and a configurable background color (fully transparent by default)
-- Meshes: `LineMesh` (lines) and `TriangleMesh` (indexed triangles)
+- Meshes: `LineMesh` (lines) and `TriangleMesh` (triangles, solid or wireframe-only)
 - Built-in objects: `GameObject` (any mesh, per-vertex normal shading), `LineObject`, `GridObject`, `GridObjectBySpacing`
 - Model loading through Assimp (`ModelLoader.Load`): STL, OBJ, PLY, FBX, glTF, DAE and other Assimp formats
 - Thread-safe scene updates from the UI thread via `EnqueueGlAction`
@@ -40,7 +40,7 @@ Loading runs in the background (`Task.Run`): the window shows `Loading...` while
 - Right mouse button — orbit
 - Middle mouse button — pan
 - Wheel — zoom
-- Left panel: `X-`/`X+`, `Y-`/`Y+`, `Z-`/`Z+` shift the camera target along the axes, `Home` resets the angles and frames the model, `Fit` frames without resetting the angles, `Stop` clears object velocities
+- Left panel buttons are decorative: the demo contains no interaction logic
 - FPS counter in the top-left corner of the 3D view
 
 ## Project structure
@@ -102,6 +102,34 @@ renderer.EnqueueGlAction(() =>
     renderer.Scene.Add(new LineObject(
         new Vector3(-1, 0, 0), new Vector3(1, 0, 0),
         new Vector3(1f, 0.3f, 0.3f)));
+});
+```
+
+The same `TriangleMesh` renders solid by default; pass `wireframe: true` (or set `Wireframe` at runtime) to draw only triangle edges:
+
+```csharp
+MeshFactory = () => TriangleMesh.FromRawData(raw)                  // solid
+MeshFactory = () => TriangleMesh.FromRawData(raw, wireframe: true) // edges only
+```
+
+## Color
+
+Each object has a `Color`, and every mesh has an optional `Color` that overrides the object one when set. Both are plain `Vector3` values, so any mesh (solid or wireframe) can be recolored — at creation or at runtime:
+
+```csharp
+MeshFactory = () =>
+{
+    var mesh = TriangleMesh.FromRawData(raw, wireframe: true);
+    mesh.Color = new Vector3(1f, 0.5f, 0.2f);
+    return mesh;
+}
+```
+
+```csharp
+renderer.EnqueueGlAction(() =>
+{
+    var mesh = renderer.Scene.Objects.First(o => o.Name == "Part").Mesh;
+    if (mesh is not null) mesh.Color = new Vector3(0.3f, 0.7f, 1f);
 });
 ```
 
@@ -174,7 +202,7 @@ Same calls inside a button handler or a `DispatcherTimer` tick give you interact
 
 ## Limitations
 
-- Meshes are triangles and lines only; textures and materials are not supported — one color per object with normal-based shading (single light, no shadows)
+- Meshes are triangles and lines only; textures and materials are not supported — one color per object (optionally overridden per mesh) with normal-based shading (single light, no shadows)
 - STEP/IGES are not supported: Assimp reads tessellated formats, while B-rep needs a CAD kernel (OpenCascade, for example)
 - Only Windows (WGL) works for now; Linux/macOS branches are not verified
 - The OpenGL context is provided by Avalonia; no custom context or multi-window rendering

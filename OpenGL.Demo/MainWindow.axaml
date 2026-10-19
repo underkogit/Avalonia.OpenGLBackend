@@ -17,15 +17,15 @@
                       RowDefinitions="Auto,Auto,Auto"
                       ColumnSpacing="6"
                       RowSpacing="6">
-                    <Button Grid.Row="0" Grid.Column="0" Content="X-" Tag="X-" Click="OnJogClick" />
-                    <Button Grid.Row="0" Grid.Column="1" Content="Y-" Tag="Y-" Click="OnJogClick" />
-                    <Button Grid.Row="0" Grid.Column="2" Content="Z-" Tag="Z-" Click="OnJogClick" />
-                    <Button Grid.Row="1" Grid.Column="0" Content="X+" Tag="X+" Click="OnJogClick" />
-                    <Button Grid.Row="1" Grid.Column="1" Content="Y+" Tag="Y+" Click="OnJogClick" />
-                    <Button Grid.Row="1" Grid.Column="2" Content="Z+" Tag="Z+" Click="OnJogClick" />
-                    <Button Grid.Row="2" Grid.Column="0" Content="Home" Click="OnHomeClick" />
-                    <Button Grid.Row="2" Grid.Column="1" Content="Stop" Click="OnStopClick" />
-                    <Button Grid.Row="2" Grid.Column="2" Content="Fit" Click="OnFitClick" />
+                    <Button Grid.Row="0" Grid.Column="0" Content="X-" />
+                    <Button Grid.Row="0" Grid.Column="1" Content="Y-" />
+                    <Button Grid.Row="0" Grid.Column="2" Content="Z-" />
+                    <Button Grid.Row="1" Grid.Column="0" Content="X+" />
+                    <Button Grid.Row="1" Grid.Column="1" Content="Y+" />
+                    <Button Grid.Row="1" Grid.Column="2" Content="Z+" />
+                    <Button Grid.Row="2" Grid.Column="0" Content="Home" />
+                    <Button Grid.Row="2" Grid.Column="1" Content="Stop" />
+                    <Button Grid.Row="2" Grid.Column="2" Content="Fit" />
                 </Grid>
                 <TextBlock Text="Right button — orbit&#x0a;Middle button — pan&#x0a;Wheel — zoom"
                            Foreground="#8A8A92"

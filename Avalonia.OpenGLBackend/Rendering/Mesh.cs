@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 using Silk.NET.OpenGL;
 
 namespace Avalonia.OpenGLBackend.Rendering;
@@ -9,6 +10,8 @@ public abstract class Mesh : IDisposable
     public static void SetGl(GL gl) => _gl = gl;
 
     protected readonly GL Context = _gl ?? throw new InvalidOperationException("Mesh.SetGl was not called.");
+
+    public Vector3? Color { get; set; }
 
     protected uint Vao;
     protected uint Vbo;

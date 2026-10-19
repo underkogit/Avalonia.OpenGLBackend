@@ -99,7 +99,8 @@ public abstract class SceneObject : IDisposable
     protected unsafe virtual void OnRender(ShaderProgram program, Matrix4x4 view, Matrix4x4 projection, int mvpLoc, int colorLoc)
     {
         var gl = _gl;
-        if (gl is null || Mesh is null) return;
+        var mesh = Mesh;
+        if (gl is null || mesh is null) return;
 
         program.Use();
 
@@ -107,10 +108,12 @@ public abstract class SceneObject : IDisposable
 
         if (mvpLoc >= 0)
             gl.UniformMatrix4(mvpLoc, 1, false, (float*)&mvp);
-        if (colorLoc >= 0)
-            gl.Uniform3(colorLoc, Color.X, Color.Y, Color.Z);
 
-        Mesh.Draw();
+        var color = mesh.Color ?? Color;
+        if (colorLoc >= 0)
+            gl.Uniform3(colorLoc, color.X, color.Y, color.Z);
+
+        mesh.Draw();
     }
 
     private int _cachedMvpLoc = -1;
