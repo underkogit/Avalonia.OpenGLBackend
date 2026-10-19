@@ -3,6 +3,7 @@ using System.IO;
 using System.Numerics;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.OpenGLBackend.Core.Objects;
 using Avalonia.OpenGLBackend.Formats;
 using Avalonia.OpenGLBackend.Rendering;
@@ -14,6 +15,9 @@ public partial class MainWindow : Window
 {
     private const string ModelPath = @"F:\KompacProjects\CNC_v1\Сборка.stl";
     private const float ModelScale = 0.1f;
+
+    private SceneRenderer? _renderer;
+    private bool _wireframe;
 
     public MainWindow()
     {
@@ -28,6 +32,7 @@ public partial class MainWindow : Window
         var fpsText = this.FindControl<TextBlock>("FpsText");
         if (renderer is null || host is null || fpsText is null) return;
 
+        _renderer = renderer;
         renderer.ContinuousRendering = true;
 
         host.PointerPressed += (_, e) => renderer.HandlePointerPressed(e);
@@ -71,20 +76,19 @@ public partial class MainWindow : Window
             model.Transform.SetScale(ModelScale);
             renderer.Scene.Add(model);
 
-            var model2 = new GameObject
-            {
-                Name = Path.GetFileNameWithoutExtension(ModelPath),
-                Color = new Vector3(0.8f, 0.8f, 0.8f),
-                Mesh = TriangleMesh.FromRawData(raw)
-            };
-            model2.Transform.SetScale(ModelScale);
-            renderer.Scene.Add(model2);
-
             renderer.Camera.Target = center * ModelScale;
             renderer.Camera.Radius = MathF.Max(radius * ModelScale * 2f, 0.5f);
             renderer.Camera.Yaw = 0f;
             renderer.Camera.Pitch = 0.3f;
         });
+
+        var timer = new Avalonia.Threading.DispatcherTimer { Interval = TimeSpan.FromSeconds(12) };
+        timer.Tick += (_, _) =>
+        {
+            timer.Stop();
+            renderer.SetObjectWireframe(Path.GetFileNameWithoutExtension(ModelPath), true);
+        };
+        timer.Start();
     }
 
     private static (Vector3 Center, float Radius) ComputeBounds(RawMeshData data)
@@ -101,5 +105,14 @@ public partial class MainWindow : Window
         }
 
         return ((min + max) * 0.5f, Vector3.Distance(min, max) * 0.5f);
+    }
+
+    private void Button_OnClick(object? sender, RoutedEventArgs e)
+    {
+        var renderer = _renderer;
+        if (renderer is null) return;
+
+        _wireframe = !_wireframe;
+        renderer.SetObjectWireframe(Path.GetFileNameWithoutExtension(ModelPath), _wireframe);
     }
 }

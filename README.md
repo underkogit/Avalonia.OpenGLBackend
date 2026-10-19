@@ -112,6 +112,19 @@ MeshFactory = () => TriangleMesh.FromRawData(raw)                  // solid
 MeshFactory = () => TriangleMesh.FromRawData(raw, wireframe: true) // edges only
 ```
 
+Toggling it later is just as simple — `SetObjectWireframe` looks the object up by name and switches its mesh to the edge-only mode:
+
+```csharp
+renderer.SetObjectWireframe("Part", true);  // edges only
+renderer.SetObjectWireframe("Part", false); // solid again
+```
+
+If you keep a reference to the mesh, you can also flip the flag directly inside a GL action:
+
+```csharp
+renderer.EnqueueGlAction(() => viewModelMesh.Wireframe = true);
+```
+
 ## Color
 
 Each object has a `Color`, and every mesh has an optional `Color` that overrides the object one when set. Both are plain `Vector3` values, so any mesh (solid or wireframe) can be recolored — at creation or at runtime:

@@ -10,6 +10,7 @@ using Avalonia.Input;
 using Avalonia.OpenGL;
 using Avalonia.OpenGL.Controls;
 using Avalonia.OpenGLBackend.Core;
+using Avalonia.OpenGLBackend.Rendering.Meshes;
 using Silk.NET.OpenGL;
 
 namespace Avalonia.OpenGLBackend.Rendering;
@@ -266,6 +267,15 @@ public sealed class SceneRenderer : OpenGlControlBase
     {
         var obj = Scene.Objects.FirstOrDefault(o => o.Name == name);
         if (obj is not null) obj.LinearVelocity = velocity;
+    });
+
+    public void SetObjectWireframe(string name, bool wireframe) => EnqueueGlAction(() =>
+    {
+        var obj = Scene.Objects.FirstOrDefault(o => o.Name == name);
+        if (obj is null) return;
+
+        obj.EnsureInitialized();
+        if (obj.Mesh is TriangleMesh triangleMesh) triangleMesh.Wireframe = wireframe;
     });
 
     public void HandlePointerWheelChanged(PointerWheelEventArgs e)
